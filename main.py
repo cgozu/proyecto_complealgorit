@@ -3,14 +3,8 @@ import matplotlib.pyplot as plt
 import csv
 
 def read_books_data(filename):
-    """
-    Lee los datos del archivo CSV "books.csv" y muestra su contenido.
-    
-    Args:
-    - filename (str): El nombre del archivo CSV.
-    """
+    #Lee los datos del archivo CSV "books.csv" y muestra su contenido.
     books = []
-    # Lee los datos del archivo CSV y muestra su contenido
     with open(filename, 'r', encoding='utf-8') as file:
         reader = csv.DictReader(file)
         for row in reader:
@@ -18,24 +12,15 @@ def read_books_data(filename):
     return books
     
 def calculate_similarity(book1, book2):
-    """
-    Calcula la similitud entre dos libros basada en ciertos criterios.
-
-    Args:
-    - book1 (dict): Diccionario que representa el primer libro.
-    - book2 (dict): Diccionario que representa el segundo libro.
-
-    Returns:
-    - int: Valor de similitud entre los libros (0 o 1).
-    """
+    #Calcula la similitud entre dos libros basada en ciertos criterios.
     similarity_score = 0
     
-    # Condición 1: Mismo autor
+    # Criterio 1: Mismo autor
     if book1['Author'] == book2['Author']:
         similarity_score += 1
         print("Se enconre una similitud entre: ", book1['Book'], "y", book2['Book'])
     
-    # Condición 2: Mismo género
+    # Criterio 2: Mismo género
     genres_book1 = set(book1['Genres'].strip("[]").replace("'", "").split(", "))
     genres_book2 = set(book2['Genres'].strip("[]").replace("'", "").split(", "))
     common_genres = genres_book1.intersection(genres_book2)
@@ -44,15 +29,7 @@ def calculate_similarity(book1, book2):
     return similarity_score
 
 def create_book_graph(books):
-    """
-    Crea un grafo de libros y asigna valores a las aristas basados en la similitud entre los libros.
-
-    Args:
-    - books (list): Lista de diccionarios representando los libros.
-
-    Returns:
-    - nx.Graph: Grafo de libros con valores de similitud asignados a las aristas.
-    """
+    #Crea un grafo de libros y asigna valores a las aristas basados en la similitud entre los libros.
     G = nx.Graph()
 
     # Agrega los nodos (libros) al grafo
@@ -68,7 +45,6 @@ def create_book_graph(books):
                     G.add_edge(book1['Book'], book2['Book'], weight=similarity)
     return G
 
-# Lista de libros (ejemplo)
 # Nombre del archivo CSV
 filename = "books.csv"
 
@@ -78,11 +54,13 @@ books = read_books_data(filename)
 # Crea el grafo de libros y asigna valores a las aristas basados en la similitud entre los libros
 book_graph = create_book_graph(books)
 
+
+#config del grafo a mostrar
 plt.figure(figsize=(10, 8))
 pos = nx.spring_layout(book_graph, k=2  )  # Determina la posición de los nodos
 nx.draw(book_graph, pos, with_labels=True, node_size=2000, node_color='skyblue', font_size=10, font_weight='bold', edge_color='gray', width=2)
 
-# Añade etiquetas de similitud a las aristas
+# Añadir las aristas con los valores de  similitud
 labels = nx.get_edge_attributes(book_graph, 'weight')
 nx.draw_networkx_edge_labels(book_graph, pos, edge_labels=labels, font_color='red')
 
